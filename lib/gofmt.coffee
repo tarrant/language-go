@@ -9,20 +9,23 @@ module.exports =
     gofmt = "/usr/local/bin/gofmt"
 
     editor = atom.workspace.activePaneItem
-    fileName = editor.getLongTitle()
+    [startRow, startColumn] = editor.getCursorBufferPosition()
+    console.log(startRow, startColumn)
 
-    cursor = editor.getCursorBufferPosition()
+    try
+      fmt = spawn(gofmt)
 
-    fmt = spawn(gofmt)
-    fmt.stdin.write(editor.getText())
-    fmt.stdin.end()
+      fmt.stdin.write(editor.getText())
+      fmt.stdin.end()
 
-    newData=''
-    fmt.stdout.on 'data', (data) =>
-      newData += data.toString()
+      newData=''
+      fmt.stdout.on 'data', (data) =>
+        newData += data.toString()
 
-    fmt.on 'exit', (code)=>
-      if code == 0
-        editor.setText(newData)
+      fmt.on 'exit', (code)=>
+        if code == 0 and newData != ''
+          editor.setText(newData)
+    catch
+      console.log("Error running gofmt")
 
-    editor.setCursorBufferPosition(cursor)
+    editor.setCursorBufferPosition([startRow, startColumn])
