@@ -7,6 +7,7 @@
     "atom": "*",
     "node": "*"
   },
+  "activationEvents": ["golang:gofmt"],
   "homepage": "http://atom.github.io/language-go",
   "repository": {
     "type": "git",
